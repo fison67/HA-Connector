@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.1)
+ *  HA Connector (v.0.0.3)
  *
  *  Authors
  *   - fison67@nate.com
@@ -17,6 +17,369 @@
  
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import groovy.transform.Field
+
+
+@Field 
+attrList = ["switch", "button", "contact", "motion", "acceleration", "presence", "carbonDioxide", "carbonMonoxide", "energy", "illuminance", "power", "shock", "humidity", "lqi",
+            "rssi", "temperature", "thermostatSetpoint", "threeAxis", "touch", "voltage", "water"]
+    
+@Field 
+CAPABILITY_MAP = [
+    "accelerationSensors": [
+        name: "Acceleration Sensor",
+        capability: "capability.accelerationSensor",
+        attributes: [
+            "acceleration"
+        ]
+    ],
+    "alarm": [
+        name: "Alarm",
+        capability: "capability.alarm",
+        attributes: [
+            "alarm"
+        ],
+        action: "actionAlarm"
+    ],
+    "beacon": [
+        name: "Beacon",
+        capability: "capability.beacon",
+        attributes: [
+            "presence"
+        ]
+    ],
+    "button": [
+        name: "Button",
+        capability: "capability.button",
+        attributes: [
+            "button"
+        ]
+    ],
+    "carbonDioxideMeasurement": [
+        name: "Carbon Dioxide Measurement",
+        capability: "capability.carbonDioxideMeasurement",
+        attributes: [
+            "carbonDioxide"
+        ]
+    ],
+    "carbonMonoxideDetector": [
+        name: "Carbon Monoxide Detector",
+        capability: "capability.carbonMonoxideDetector",
+        attributes: [
+            "carbonMonoxide"
+        ]
+    ],
+    "colorControl": [
+        name: "Color Control",
+        capability: "capability.colorControl",
+        attributes: [
+            "hue",
+            "saturation",
+            "color"
+        ],
+        action: "actionColor"
+    ],
+    "colorTemperature": [
+        name: "Color Temperature",
+        capability: "capability.colorTemperature",
+        attributes: [
+            "colorTemperature"
+        ],
+        action: "actionColorTemperature"
+    ],
+    "consumable": [
+        name: "Consumable",
+        capability: "capability.consumable",
+        attributes: [
+            "consumable"
+        ],
+        action: "actionConsumable"
+    ],
+    "contactSensors": [
+        name: "Contact Sensor",
+        capability: "capability.contactSensor",
+        attributes: [
+            "contact"
+        ]
+    ],
+    "doorControl": [
+        name: "Door Control",
+        capability: "capability.doorControl",
+        attributes: [
+            "door"
+        ],
+        action: "actionOpenClosed"
+    ],
+    "energyMeter": [
+        name: "Energy Meter",
+        capability: "capability.energyMeter",
+        attributes: [
+            "energy"
+        ]
+    ],
+    "garageDoors": [
+        name: "Garage Door Control",
+        capability: "capability.garageDoorControl",
+        attributes: [
+            "door"
+        ],
+        action: "actionOpenClosed"
+    ],
+    "illuminanceMeasurement": [
+        name: "Illuminance Measurement",
+        capability: "capability.illuminanceMeasurement",
+        attributes: [
+            "illuminance"
+        ]
+    ],
+    "levels": [
+        name: "Switch Level",
+        capability: "capability.switchLevel",
+        attributes: [
+            "level"
+        ],
+        action: "actionLevel"
+    ],
+    "lock": [
+        name: "Lock",
+        capability: "capability.lock",
+        attributes: [
+            "lock"
+        ],
+        action: "actionLock"
+    ],
+    "motionSensors": [
+        name: "Motion Sensor",
+        capability: "capability.motionSensor",
+        attributes: [
+            "motion"
+        ],
+        action: "actionActiveInactive"
+    ],
+    "pHMeasurement": [
+        name: "pH Measurement",
+        capability: "capability.pHMeasurement",
+        attributes: [
+            "pH"
+        ]
+    ],
+    "powerMeters": [
+        name: "Power Meter",
+        capability: "capability.powerMeter",
+        attributes: [
+            "power"
+        ]
+    ],
+    "presenceSensors": [
+        name: "Presence Sensor",
+        capability: "capability.presenceSensor",
+        attributes: [
+            "presence"
+        ],
+        action: "actionPresence"
+    ],
+    "humiditySensors": [
+        name: "Relative Humidity Measurement",
+        capability: "capability.relativeHumidityMeasurement",
+        attributes: [
+            "humidity"
+        ]
+    ],
+    "relaySwitch": [
+        name: "Relay Switch",
+        capability: "capability.relaySwitch",
+        attributes: [
+            "switch"
+        ],
+        action: "actionOnOff"
+    ],
+    "shockSensor": [
+        name: "Shock Sensor",
+        capability: "capability.shockSensor",
+        attributes: [
+            "shock"
+        ]
+    ],
+    "signalStrength": [
+        name: "Signal Strength",
+        capability: "capability.signalStrength",
+        attributes: [
+            "lqi",
+            "rssi"
+        ]
+    ],
+    "sleepSensor": [
+        name: "Sleep Sensor",
+        capability: "capability.sleepSensor",
+        attributes: [
+            "sleeping"
+        ]
+    ],
+    "smokeDetector": [
+        name: "Smoke Detector",
+        capability: "capability.smokeDetector",
+        attributes: [
+            "smoke"
+        ]
+    ],
+    "soundSensor": [
+        name: "Sound Sensor",
+        capability: "capability.soundSensor",
+        attributes: [
+            "sound"
+        ]
+    ],
+    "stepSensor": [
+        name: "Step Sensor",
+        capability: "capability.stepSensor",
+        attributes: [
+            "steps",
+            "goal"
+        ]
+    ],
+    "switches": [
+        name: "Switch",
+        capability: "capability.switch",
+        attributes: [
+            "switch"
+        ],
+        action: "actionOnOff"
+    ],
+    "soundPressureLevel": [
+        name: "Sound Pressure Level",
+        capability: "capability.soundPressureLevel",
+        attributes: [
+            "soundPressureLevel"
+        ]
+    ],
+    "tamperAlert": [
+        name: "Tamper Alert",
+        capability: "capability.tamperAlert",
+        attributes: [
+            "tamper"
+        ]
+    ],
+    "temperatureSensors": [
+        name: "Temperature Measurement",
+        capability: "capability.temperatureMeasurement",
+        attributes: [
+            "temperature"
+        ]
+    ],
+    "thermostat": [
+        name: "Thermostat",
+        capability: "capability.thermostat",
+        attributes: [
+            "temperature",
+            "heatingSetpoint",
+            "coolingSetpoint",
+            "thermostatSetpoint",
+            "thermostatMode",
+            "thermostatFanMode",
+            "thermostatOperatingState"
+        ],
+        action: "actionThermostat"
+    ],
+    "thermostatCoolingSetpoint": [
+        name: "Thermostat Cooling Setpoint",
+        capability: "capability.thermostatCoolingSetpoint",
+        attributes: [
+            "coolingSetpoint"
+        ],
+        action: "actionCoolingThermostat"
+    ],
+    "thermostatFanMode": [
+        name: "Thermostat Fan Mode",
+        capability: "capability.thermostatFanMode",
+        attributes: [
+            "thermostatFanMode"
+        ],
+        action: "actionThermostatFan"
+    ],
+    "thermostatHeatingSetpoint": [
+        name: "Thermostat Heating Setpoint",
+        capability: "capability.thermostatHeatingSetpoint",
+        attributes: [
+            "heatingSetpoint"
+        ],
+        action: "actionHeatingThermostat"
+    ],
+    "thermostatMode": [
+        name: "Thermostat Mode",
+        capability: "capability.thermostatMode",
+        attributes: [
+            "thermostatMode"
+        ],
+        action: "actionThermostatMode"
+    ],
+    "thermostatOperatingState": [
+        name: "Thermostat Operating State",
+        capability: "capability.thermostatOperatingState",
+        attributes: [
+            "thermostatOperatingState"
+        ]
+    ],
+    "thermostatSetpoint": [
+        name: "Thermostat Setpoint",
+        capability: "capability.thermostatSetpoint",
+        attributes: [
+            "thermostatSetpoint"
+        ]
+    ],
+    "threeAxis": [
+        name: "Three Axis",
+        capability: "capability.threeAxis",
+        attributes: [
+            "threeAxis"
+        ]
+    ],
+    "timedSession": [
+        name: "Timed Session",
+        capability: "capability.timedSession",
+        attributes: [
+            "timeRemaining",
+            "sessionStatus"
+        ],
+        action: "actionTimedSession"
+    ],
+    "touchSensor": [
+        name: "Touch Sensor",
+        capability: "capability.touchSensor",
+        attributes: [
+            "touch"
+        ]
+    ],
+    "valve": [
+        name: "Valve",
+        capability: "capability.valve",
+        attributes: [
+            "contact"
+        ],
+        action: "actionOpenClosed"
+    ],
+    "voltageMeasurement": [
+        name: "Voltage Measurement",
+        capability: "capability.voltageMeasurement",
+        attributes: [
+            "voltage"
+        ]
+    ],
+    "waterSensors": [
+        name: "Water Sensor",
+        capability: "capability.waterSensor",
+        attributes: [
+            "water"
+        ]
+    ],
+    "windowShades": [
+        name: "Window Shade",
+        capability: "capability.windowShade",
+        attributes: [
+            "windowShade"
+        ],
+        action: "actionOpenClosed"
+    ]
+]
 
 
 definition(
@@ -36,6 +399,7 @@ preferences {
    page(name: "haDevicePage")
    page(name: "haAddDevicePage")
    page(name: "haDeleteDevicePage")
+   page(name: "stAddDevicePage")
 }
 
 
@@ -48,11 +412,22 @@ def mainPage() {
            href "haDevicePage", title: "Get HA Devices", description:""
            href "haAddDevicePage", title: "Add HA Device", description:""
            href "haDeleteDevicePage", title: "Delete HA Device", description:""
+           href "stAddDevicePage", title: "Add ST Device", description:"Select ST Devices to add HA"
        }
        section() {
             paragraph "View this SmartApp's configuration to use it in other places."
             href url:"${apiServerUrl("/api/smartapps/installations/${app.id}/config?access_token=${state.accessToken}")}", style:"embedded", required:false, title:"Config", description:"Tap, select, copy, then click \"Done\""
        }
+    }
+}
+
+def stAddDevicePage(){
+	dynamicPage(name: "stAddDevicePage", title:"Add ST Device") {
+    	section ("Select") {
+            CAPABILITY_MAP.each { key, capability ->
+                input key, capability["capability"], title: capability["name"], multiple: true, required: false
+            }
+        }
     }
 }
 
@@ -89,8 +464,10 @@ def haAddDevicePage(){
         	friendly_name = ""
         }
        	if(!addedDNIList.contains("ha-connector-" + entity_id)){
-        	if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("sensor.")){
-        		list.push("${friendly_name} [ ${entity_id} ]")
+        	if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("sensor.") || entity_id.contains("vacuum.") || entity_id.contains("device_tracker.")){
+            	if(!entity_id.startsWith("sensor.st_") && !entity_id.startsWith("switch.st_")){
+        			list.push("${friendly_name} [ ${entity_id} ]")
+                }
             }
         }
     }
@@ -132,6 +509,72 @@ def installed() {
     app.updateSetting("selectedDeleteHADevice", "None")
 }
 
+def stateChangeHandler(evt) {
+	def device = evt.getDevice()
+    if(device){
+    	def type = device.hasCommand("on") ? "switch" : "sensor"
+ 
+		def theAtts = device.supportedAttributes
+        def resultMap = [:]
+        resultMap["friendly_name"] = device.displayName
+        theAtts.each {att ->
+        	def item = {}
+            try{
+            	def _attr = "${att.name}State"
+                def val = device."$_attr".value
+                resultMap["${att.name}"] = val
+            }catch(e){
+            }
+        }
+        
+        def value = "${evt.value}"
+        /*
+        if("${evt.name}" == "lastCheckin"){
+        	def existMotion = False
+        	device.capabilities.each {cap ->
+            	if("Motion Sensor".equalsIgnoreCase("${cap.name}")){
+                	existMotion = True
+                }
+            }
+            if(existMotion == True){
+        		value = device.motionState.value
+            }
+        }
+        */
+        String pattern = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s+/]"; 
+        String idString = "${type}.st_" + device.name.toLowerCase().replaceAll(pattern, "_") + "_" + device.deviceNetworkId.toLowerCase().replaceAll(pattern, "_");
+        String ids = idString.replaceAll(" ", "_")
+
+		def options = [
+            "method": "POST",
+            "path": ("/api/states/" + ids),
+            "headers": [
+                "HOST": settings.haAddress,
+                "x-ha-access": settings.haPassword,
+                "Content-Type": "application/json"
+            ],
+            "body":[
+                "state":value,
+                "attributes":resultMap
+            ]
+        ]
+        
+//        log.debug "ST -> HA >> [${device.displayName}(${device.deviceNetworkId}) : ${value}]"
+        def myhubAction = new physicalgraph.device.HubAction(options, null, [callback: notifyCallback])
+    	sendHubCommand(myhubAction)
+    }
+}
+
+def notifyCallback(physicalgraph.device.HubResponse hubResponse) {
+    def msg, json, status
+    try {
+        msg = parseLanMessage(hubResponse.description)
+//        log.debug(msg)
+    } catch (e) {
+        logger('warn', "Exception caught while parsing data: "+e);
+    }
+}
+
 def updated() {
     log.debug "Updated with settings: ${settings}"
 
@@ -139,6 +582,16 @@ def updated() {
     unsubscribe()
     // Subscribe to stuff
     initialize()
+    
+    CAPABILITY_MAP.each { key, capability ->
+        capability["attributes"].each { attribute ->
+        	for (item in settings[key]) {
+                if(settings[key]){
+                    subscribe(item, attribute, stateChangeHandler)
+                }
+            }
+        }
+    }
     
     app.updateSetting("selectedAddHADevice", "None")
     app.updateSetting("selectedDeleteHADevice", "None")
@@ -208,7 +661,9 @@ def deleteChildDevice(){
             def nameAndDni = settings.selectedDeleteHADevice.split(" -> ")
             try{
                 deleteChildDevice(nameAndDni[1])
-            }catch(err){}
+            }catch(err){
+            	
+            }
      	}       
     }
 }
@@ -290,6 +745,135 @@ def updateDevice(){
 	 render contentType: "application/json", data: deviceJson  
 }
 
+def getSTDevices(){
+	def list = []
+	CAPABILITY_MAP.each { key, capability ->
+        capability["attributes"].each { attribute ->
+        	if(settings[key]){
+            	settings[key].each {device ->
+                	def obj = [:]
+                    obj["dni"] = device.deviceNetworkId
+                    obj["id"] = device.name
+                    obj["name"] = device.displayName
+                    obj["type"] = device.hasCommand("on") ? "switch" : "sensor"
+                    try{
+                    	def theAtts = device.supportedAttributes
+                        def sList = []
+                        theAtts.each {att ->
+                        	sList.push(att.name)
+                        }
+                        obj["attr"] = sList
+                    }catch(e){
+                    }
+                    
+                    def existSameDevice = False
+                    for ( item in list ) {
+                    	if(item['dni'] == device.deviceNetworkId){
+                    		existSameDevice = True
+                            break
+                        }
+                    }
+                    if(existSameDevice == False){
+            			list.push(obj)
+					}
+                }
+            }
+        }
+    }
+	def deviceJson = new groovy.json.JsonOutput().toJson(list)
+	render contentType: "application/json", data: deviceJson  
+}
+
+def getSTDevice(){
+	def status = null
+    def totalMap = [:]
+    def resultMap = [:]
+	CAPABILITY_MAP.each { key, capability ->
+        capability["attributes"].each { attribute ->
+        	if(settings[key]){
+            	settings[key].each {device ->
+                	def dni = device.deviceNetworkId
+                    if(dni == params.dni){
+                    	totalMap["entity_id"] = "sensor.st_" + dni.toLowerCase()
+              //          resultMap["friendly_name"] = device.displayName
+                    	def theAtts = device.supportedAttributes
+                        theAtts.each {att ->
+                        	def item = {}
+                            try{
+                          //  	if(existValueInList(attrList, att.name)){ 
+                              	if(attrList.contains(att.name)){
+                                	if(status == null){
+                                    	status = device.currentValue(att.name)
+                                    }
+                                }
+                                
+                                def _attr = "${att.name}State"
+                                def val = device."$_attr".value
+                                resultMap["${att.name}"] = val
+                            }catch(e){
+                          //  	log.error("${e}")
+                            }
+                        }
+                      //      log.debug "Switch:" + device.currentValue("switch")
+                            
+                      
+                    }
+                }
+            }
+        }
+    }
+    
+    totalMap['state'] = status
+    totalMap['attributes'] = resultMap
+	def deviceJson = new groovy.json.JsonOutput().toJson(totalMap)
+//	log.debug "GET =======>>> ${params}, status: ${resultMap}"
+	render contentType: "application/json", data: deviceJson  
+}
+
+def existValueInList(list, value){
+	for (item in list) {
+    	if(item == value){
+        	return True
+        }
+    }
+    return False
+}
+
+def updateSTDevice(){
+//	log.debug "POST >>>> param:${params}"
+	def state = "${params.turn}"
+	CAPABILITY_MAP.each { key, capability ->
+        capability["attributes"].each { attribute ->
+        	if(settings[key]){
+            	settings[key].each {device ->
+                	def dni = device.deviceNetworkId
+                    if(dni == params.dni){
+                    
+                    	def theCommands = device.supportedCommands
+                        if(existValueInList(theCommands, "on") == True || existValueInList(theCommands, "off") == True){
+                        	device."$params.turn"()
+                        }else if(existValueInList(theCommands, "lock") == True || existValueInList(theCommands, "unlock") == True){
+                        	if(state == "on"){
+                            	device.lock()
+                            }else{
+                            	device.unlock()
+                            }
+                        }else if(existValueInList(theCommands, "lock") == True || existValueInList(theCommands, "unlock") == True){
+                        	if(state == "on"){
+                            	device.arrived()
+                            }else{
+                            	device.departed();
+                            }
+                        }
+                              
+                    }
+                }
+            }
+        }
+    }
+	render contentType: "text/html", data: state  
+}
+
 def authError() {
     [error: "Permission denied"]
 }
@@ -316,9 +900,23 @@ mappings {
     if (!params.access_token || (params.access_token && params.access_token != state.accessToken)) {
         path("/config")                         { action: [GET: "authError"] }
         path("/update")                         { action: [GET: "authError"]  }
+        path("/getSTDevices")                   { action: [GET: "authError"]  }
+        path("/get") {
+            action: [
+                GET: "authError",
+                POST: "authError"
+            ]
+        }
 
     } else {
         path("/config")                         { action: [GET: "renderConfig"]  }
         path("/update")                         { action: [GET: "updateDevice"]  }
+        path("/getSTDevices")                   { action: [GET: "getSTDevices"]  }
+  		path("/get") {
+            action: [
+                GET: "getSTDevice",
+                POST: "updateSTDevice"
+            ]
+        }
     }
 }
