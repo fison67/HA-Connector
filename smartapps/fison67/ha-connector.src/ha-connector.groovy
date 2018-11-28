@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.3)
+ *  HA Connector (v.0.0.4)
  *
  *  Authors
  *   - fison67@nate.com
