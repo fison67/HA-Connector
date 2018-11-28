@@ -617,7 +617,7 @@ def getHADeviceByEntityId(entity_id){
 }
 
 def addHAChildDevice(){
-	String[] dth1_list = ["active", "inactive", "open", "closed", "dry", "wet", "clear", "detected", "not present", "present", "home", "not home", "on", "off"]
+	String[] dth1_list = ["active", "inactive", "open", "closed", "dry", "wet", "clear", "detected", "not present", "present", "home", "not_home", "on", "off"]
     if(settings.selectedAddHADevice){
         if(settings.selectedAddHADevice != "None"){
             log.debug "ADD >> " + settings.selectedAddHADevice
