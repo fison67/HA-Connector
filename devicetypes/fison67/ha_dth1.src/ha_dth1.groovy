@@ -1,5 +1,5 @@
 /**
- *  HA DTH1 (v.0.0.3)
+ *  HA DTH1 (v.0.0.4)
  *
  *  Authors
  *   - fison67@nate.com
@@ -62,8 +62,10 @@ metadata {
                 attributeState "clear", label:'${name}', backgroundColor: "#ffffff", icon:"st.alarm.smoke.clear" 
             	attributeState "detected", label:'${name}', backgroundColor: "#e86d13", icon:"st.alarm.smoke.smoke" 
                 attributeState "not present", label:'${name}', backgroundColor: "#ffffff", icon:"st.presence.tile.presence-default" 
-            	attributeState "present", label:'${name}', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
-                attributeState "on", label:'${name}', action:"off", icon:"st.switches.light.on", backgroundColor:"#00a0dc", nextState:"turningOff"
+            	attributeState "present", label:'present', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
+                attributeState "not home", label:'not present', backgroundColor: "#ffffff", icon:"st.presence.tile.presence-default" 
+            	attributeState "home", label:'${name}', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
+		attributeState "on", label:'${name}', action:"off", icon:"st.switches.light.on", backgroundColor:"#00a0dc", nextState:"turningOff"
                 attributeState "off", label:'${name}', action:"on", icon:"st.switches.light.off", backgroundColor:"#ffffff", nextState:"turningOn"
                 
                 attributeState "turningOn", label:'${name}', action:"off", icon:"st.switches.light.on", backgroundColor:"#00a0dc", nextState:"turningOff"
