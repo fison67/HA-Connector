@@ -125,7 +125,7 @@ def setSensorValue(value){
     case "Sound Sensor":
     	sendEvent(name:"sound", value: (settings.soundActiveStr == "" ? value : (settings.soundActiveStr == value ? "detected" : "not detected")))
     	break;
-    case "Presence":
+    case "Presence Sensor":
     	sendEvent(name:"presence", value: (settings.soundActiveStr == "" ? value : (settings.soundActiveStr == value ? "present" : "not present")))
     	break;
     }
