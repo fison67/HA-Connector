@@ -63,7 +63,7 @@ metadata {
             	attributeState "detected", label:'${name}', backgroundColor: "#e86d13", icon:"st.alarm.smoke.smoke" 
                 attributeState "not present", label:'${name}', backgroundColor: "#ffffff", icon:"st.presence.tile.presence-default" 
             	attributeState "present", label:'present', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
-                attributeState "not home", label:'not present', backgroundColor: "#ffffff", icon:"st.presence.tile.presence-default" 
+                attributeState "not_home", label:'not present', backgroundColor: "#ffffff", icon:"st.presence.tile.presence-default" 
             	attributeState "home", label:'${name}', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
 		attributeState "on", label:'${name}', action:"off", icon:"st.switches.light.on", backgroundColor:"#00a0dc", nextState:"turningOff"
                 attributeState "off", label:'${name}', action:"on", icon:"st.switches.light.off", backgroundColor:"#ffffff", nextState:"turningOn"
