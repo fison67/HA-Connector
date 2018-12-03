@@ -13,7 +13,7 @@ import logging
 
 import homeassistant.loader as loader
 from homeassistant.const import (STATE_UNKNOWN, EVENT_STATE_CHANGED)
-from homeassistant.remote import JSONEncoder
+#from homeassistant.remote import JSONEncoder
 
 DOMAIN = "ha_connector"
 
