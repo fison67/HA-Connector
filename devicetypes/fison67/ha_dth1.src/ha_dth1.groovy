@@ -95,7 +95,7 @@ def setStatus(String value){
     if(state.entity_id == null){
     	return
     }
-	log.debug "Status[${state.entity_id}] >> '${value}'"
+	log.debug "Status[${state.entity_id}] >> ${value}"
     sendEvent(name:"switch", value:value)
     setSensorValue(value)
     
@@ -110,8 +110,7 @@ def setHASetting(url, password, deviceId){
     state.entity_id = deviceId
 }
 
-def setSensorValue(_value){
-	def value = _value.replaceAll("'", "")
+def setSensorValue(value){
     switch(settings.sensorType){
     case "Motion Sensor":
     	sendEvent(name:"motion", value: (settings.motionActiveStr == "" ? value : (settings.motionActiveStr == value ? "active" : "inactive")))
