@@ -99,8 +99,7 @@ def setStatus(String value){
     sendEvent(name:"switch", value:value)
     setSensorValue(value)
     
-    def now = new Date().format("yyyy MMM dd EEE h:mm:ss a", location.timeZone)
-    sendEvent(name: "lastCheckin", value: now, displayed: false)
+    sendEvent(name: "lastCheckin", value: new Date().format("yyyy-MM-dd HH:mm:ss", location.timeZone), displayed: false)
     sendEvent(name: "entity_id", value: state.entity_id, displayed: false)
 }
 
