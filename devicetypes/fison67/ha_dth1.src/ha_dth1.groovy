@@ -1,5 +1,5 @@
 /**
- *  HA DTH1 (v.0.0.4)
+ *  HA DTH1 (v.0.0.5)
  *
  *  Authors
  *   - fison67@nate.com
@@ -64,8 +64,8 @@ metadata {
                 attributeState "not present", label:'${name}', backgroundColor: "#ffffff", icon:"st.presence.tile.presence-default" 
             	attributeState "present", label:'present', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
                 attributeState "not_home", label:'not present', backgroundColor: "#ffffff", icon:"st.presence.tile.presence-default" 
-            	attributeState "home", label:'${name}', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
-		attributeState "on", label:'${name}', action:"off", icon:"st.switches.light.on", backgroundColor:"#00a0dc", nextState:"turningOff"
+            	attributeState "home", label:'present', backgroundColor: "#53a7c0", icon:"st.presence.tile.presence-default" 
+				attributeState "on", label:'${name}', action:"off", icon:"st.switches.light.on", backgroundColor:"#00a0dc", nextState:"turningOff"
                 attributeState "off", label:'${name}', action:"on", icon:"st.switches.light.off", backgroundColor:"#ffffff", nextState:"turningOn"
                 
                 attributeState "turningOn", label:'${name}', action:"off", icon:"st.switches.light.on", backgroundColor:"#00a0dc", nextState:"turningOff"
@@ -100,8 +100,8 @@ def setStatus(String value){
     setSensorValue(value)
     
     def now = new Date().format("yyyy MMM dd EEE h:mm:ss a", location.timeZone)
-    sendEvent(name: "lastCheckin", value: now)
-    sendEvent(name: "entity_id", value: state.entity_id)
+    sendEvent(name: "lastCheckin", value: now, displayed: false)
+    sendEvent(name: "entity_id", value: state.entity_id, displayed: false)
 }
 
 def setHASetting(url, password, deviceId){
@@ -110,7 +110,8 @@ def setHASetting(url, password, deviceId){
     state.entity_id = deviceId
 }
 
-def setSensorValue(value){
+def setSensorValue(_value){
+	def value = _value.replaceAll("'", "")
     switch(settings.sensorType){
     case "Motion Sensor":
     	sendEvent(name:"motion", value: (settings.motionActiveStr == "" ? value : (settings.motionActiveStr == value ? "active" : "inactive")))
@@ -128,7 +129,7 @@ def setSensorValue(value){
     	sendEvent(name:"sound", value: (settings.soundActiveStr == "" ? value : (settings.soundActiveStr == value ? "detected" : "not detected")))
     	break;
     case "Presence Sensor":
-    	sendEvent(name:"presence", value: (settings.soundActiveStr == "" ? value : (settings.soundActiveStr == value ? "present" : "not present")))
+    	sendEvent(name:"presence", value: (settings.presenceActiveStr == "" ? value : (settings.presenceActiveStr == value ? "present" : "not present")))
     	break;
     }
 }
