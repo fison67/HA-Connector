@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.4)
+ *  HA Connector (v.0.0.5)
  *
  *  Authors
  *   - fison67@nate.com
@@ -398,6 +398,7 @@ preferences {
    page(name: "mainPage")
    page(name: "haDevicePage")
    page(name: "haAddDevicePage")
+   page(name: "haTypePage")
    page(name: "haDeleteDevicePage")
    page(name: "stAddDevicePage")
 }
@@ -417,6 +418,14 @@ def mainPage() {
        section() {
             paragraph "View this SmartApp's configuration to use it in other places."
             href url:"${apiServerUrl("/api/smartapps/installations/${app.id}/config?access_token=${state.accessToken}")}", style:"embedded", required:false, title:"Config", description:"Tap, select, copy, then click \"Done\""
+       }
+    }
+}
+
+def haTypePage() {
+    dynamicPage(name: "haTypePage", title: "Select a type", nextPage: "mainPage") {
+       section("Configure HA API"){
+           input "haAddType", "enum", title: "type", required: true, options: ["Default Sensor", "Switch", "Color Light", "White Light", "Motion Sensor", "Power Meter", "Illuminance Sensor", "Door Sensor", "Presence Sensor", "Temperature Sensor", "Humidity Sensor", "Battery", "Vacuum"], defaultValue: "Default"
        }
     }
 }
@@ -472,7 +481,7 @@ def haAddDevicePage(){
         }
     }
    
-    dynamicPage(name: "haAddDevicePage", nextPage: "mainPage") {
+    dynamicPage(name: "haAddDevicePage", nextPage: "haTypePage") {
         section ("Add HA Devices") {
             input(name: "selectedAddHADevice", title:"Select" , type: "enum", required: true, options: list, defaultValue: "None")
 		}
@@ -593,6 +602,7 @@ def updated() {
         }
     }
     
+    app.updateSetting("haAddType", "Default Sensor")
     app.updateSetting("selectedAddHADevice", "None")
     app.updateSetting("selectedDeleteHADevice", "None")
 }
@@ -617,7 +627,7 @@ def getHADeviceByEntityId(entity_id){
 }
 
 def addHAChildDevice(){
-	String[] dth1_list = ["active", "inactive", "open", "closed", "dry", "wet", "clear", "detected", "not present", "present", "home", "not_home", "on", "off"]
+//	String[] dth1_list = ["active", "inactive", "open", "closed", "dry", "wet", "clear", "detected", "not present", "present", "home", "not_home", "on", "off"]
     if(settings.selectedAddHADevice){
         if(settings.selectedAddHADevice != "None"){
             log.debug "ADD >> " + settings.selectedAddHADevice
@@ -628,27 +638,25 @@ def addHAChildDevice(){
             def dni = "ha-connector-" + entity_id
             def haDevice = getHADeviceByEntityId(entity_id)
             if(haDevice){
-                def dth = "HA DTH2"
+            	def dth = "HA " + haAddType
                 def name = haDevice.attributes.friendly_name
                 if(!name){
                     name = entity_id
                 }
-                for (String element:dth1_list ) {
-                    if ( element.equals(haDevice.state) || element == haDevice.state) {
-                        dth = "HA DTH1"
-                        break
-                    }
-                }
-                def childDevice = addChildDevice("fison67", dth, dni, location.hubs[0].id, [
-                    "label": name
-                ])
+                try{
+                    def childDevice = addChildDevice("fison67", dth, dni, location.hubs[0].id, [
+                        "label": name
+                    ])
 
-                childDevice.setHASetting(settings.haAddress, settings.haPassword, entity_id)
-                childDevice.setStatus(haDevice.state)
-                if(haDevice.attributes.unit_of_measurement){
-                    childDevice.setUnitOfMeasurement(haDevice.attributes.unit_of_measurement)
+                    childDevice.setHASetting(settings.haAddress, settings.haPassword, entity_id)
+                    childDevice.setStatus(haDevice.state)
+                    if(haDevice.attributes.unit_of_measurement){
+                        childDevice.setUnitOfMeasurement(haDevice.attributes.unit_of_measurement)
+                    }
+                    childDevice.refresh()
+                }catch(err){
+                	log.error "Add HA Device ERROR >> ${err}"
                 }
-                childDevice.refresh()
             }
         }
 	}        
