@@ -473,7 +473,7 @@ def haAddDevicePage(){
         	friendly_name = ""
         }
        	if(!addedDNIList.contains("ha-connector-" + entity_id)){
-        	if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("sensor.") || entity_id.contains("vacuum.") || entity_id.contains("device_tracker.")){
+        	if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("cover.") || entity_id.contains("sensor.") || entity_id.contains("vacuum.") || entity_id.contains("device_tracker.")){
             	if(!entity_id.startsWith("sensor.st_") && !entity_id.startsWith("switch.st_")){
         			list.push("${friendly_name} [ ${entity_id} ]")
                 }
