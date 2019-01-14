@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.5)
+ *  HA Connector (v.0.0.6)
  *
  *  Authors
  *   - fison67@nate.com
@@ -425,7 +425,7 @@ def mainPage() {
 def haTypePage() {
     dynamicPage(name: "haTypePage", title: "Select a type", nextPage: "mainPage") {
        section("Configure HA API"){
-           input "haAddType", "enum", title: "type", required: true, options: ["Default Sensor", "Switch", "Color Light", "White Light", "Motion Sensor", "Power Meter", "Illuminance Sensor", "Door Sensor", "Presence Sensor", "Temperature Sensor", "Humidity Sensor", "Battery", "Vacuum"], defaultValue: "Default"
+           input "haAddType", "enum", title: "type", required: true, options: ["Default Sensor", "Switch", "Color Light", "White Light", "Motion Sensor", "Power Meter", "Illuminance Sensor", "Door Sensor", "Presence Sensor", "Temperature Sensor", "Humidity Sensor", "Battery", "Vacuum", "Blind"], defaultValue: "Default"
        }
     }
 }
