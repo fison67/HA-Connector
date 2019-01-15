@@ -97,16 +97,9 @@ def setStatus(String value){
     }
 	log.debug "Status[${state.entity_id}] >> ${value}"
     
-    def level = value as int
-    if(level == 0){
-    	sendEvent(name:"windowShade", value: "closed")
-    }else if(level == 100){
-    	sendEvent(name:"windowShade", value: "open")
-    }else{
-    	sendEvent(name:"windowShade", value: "partially open")
-    }
-    sendEvent(name:"level", value: level)
-    
+   
+    sendEvent(name:"windowShade", value: value)
+
     def now = new Date().format("yyyy-MM-dd HH:mm:ss", location.timeZone)
     sendEvent(name: "lastCheckin", value: new Date().format("yyyy-MM-dd HH:mm:ss", location.timeZone), displayed: false)
     sendEvent(name: "entity_id", value: state.entity_id, displayed: false)
