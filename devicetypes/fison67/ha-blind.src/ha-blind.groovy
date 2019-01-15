@@ -135,8 +135,8 @@ def open(){
 	processCommand("open_cover", body)
 }
 
-def closed(){
-	log.debug "closed"
+def close(){
+	log.debug "close"
 	def body = [
         "entity_id": state.entity_id
     ]
