@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.6)
+ *  HA Connector (v.0.0.7)
  *
  *  Authors
  *   - fison67@nate.com
@@ -425,7 +425,7 @@ def mainPage() {
 def haTypePage() {
     dynamicPage(name: "haTypePage", title: "Select a type", nextPage: "mainPage") {
        section("Configure HA API"){
-           input "haAddType", "enum", title: "type", required: true, options: ["Default Sensor", "Switch", "Color Light", "White Light", "Motion Sensor", "Power Meter", "Illuminance Sensor", "Door Sensor", "Presence Sensor", "Temperature Sensor", "Humidity Sensor", "Battery", "Vacuum", "Blind"], defaultValue: "Default"
+           input "haAddType", "enum", title: "type", required: true, options: ["Default Sensor", "Switch", "Color Light", "White Light", "Motion Sensor", "Power Meter", "Illuminance Sensor", "Door Sensor", "Presence Sensor", "Temperature Sensor", "Humidity Sensor", "Battery", "Vacuum", "Blind", "Air Conditioner"], defaultValue: "Default"
        }
     }
 }
@@ -473,7 +473,7 @@ def haAddDevicePage(){
         	friendly_name = ""
         }
        	if(!addedDNIList.contains("ha-connector-" + entity_id)){
-        	if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("cover.") || entity_id.contains("sensor.") || entity_id.contains("vacuum.") || entity_id.contains("device_tracker.")){
+        	if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("cover.") || entity_id.contains("sensor.") || entity_id.contains("vacuum.") || entity_id.contains("device_tracker.") || entity_id.contains("climate.")){
             	if(!entity_id.startsWith("sensor.st_") && !entity_id.startsWith("switch.st_")){
         			list.push("${friendly_name} [ ${entity_id} ]")
                 }
