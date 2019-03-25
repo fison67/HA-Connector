@@ -388,9 +388,9 @@ definition(
     author: "fison67",
     description: "A Connector between HA and ST",
     category: "My Apps",
-    iconUrl: "https://home-assistant.io/demo/favicon-192x192.png",
-    iconX2Url: "https://home-assistant.io/demo/favicon-192x192.png",
-    iconX3Url: "https://home-assistant.io/demo/favicon-192x192.png",
+    iconUrl: "https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/original/3X/6/3/63f75921214e158bc02336dc864c096b11889f14.png",
+    iconX2Url: "https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/original/3X/6/3/63f75921214e158bc02336dc864c096b11889f14.png",
+    iconX3Url: "https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/original/3X/6/3/63f75921214e158bc02336dc864c096b11889f14.png",
     oauth: true
 )
 
