@@ -153,7 +153,7 @@ def setup(hass, config):
              if item['type'] == "sensor":
                 target = OrderedDict([("platform","stsensor"),("name",name),("resource",url + "&dni=" + item['dni']),("value_template","{{ value_json.state }}"),("json_attributes",item['attr'])])
              elif item['type'] == "switch":
-                target = OrderedDict([("platform","stswitch"),("name",name),("resource",url + "&dni=" + item['dni']),("res_on", (url + "&dni=" + item['dni'] + "&turn=on")),("res_off", (url + "&dni=" + item['dni'] + "&turn=off")),("json_attributes",item['attr'])])
+                target = OrderedDict([("platform","stswitch"),("name",name),("resource",url + "&dni=" + item['dni']),("json_attributes",item['attr'])])
              if target:
                 count = 0
                 for __item in subDoc:
