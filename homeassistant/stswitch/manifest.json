@@ -1,0 +1,8 @@
+{
+  "domain": "stswitch",
+  "name": "ST Switch",
+  "documentation": "https://github.com/fison67/HA-Connector",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": ["pyyaml==5.1.1"]
+}
