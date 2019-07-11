@@ -10,6 +10,7 @@ ha_connector:
 """
 import requests
 import logging
+import json
 
 import homeassistant.loader as loader
 from homeassistant.const import (STATE_UNKNOWN, EVENT_STATE_CHANGED)
@@ -21,6 +22,7 @@ def setup(hass, config):
     app_url = config[DOMAIN].get('app_url')
     app_id = config[DOMAIN].get('app_id')
     access_token = config[DOMAIN].get('access_token')
+    registerList = getRegisteredHADeviceList(app_url, app_id, access_token)
 
     def event_listener(event):
 
@@ -32,6 +34,9 @@ def setup(hass, config):
         newState = event.data['new_state'];
         if newState is None:
           return;
+
+        if newState.entity_id not in registerList:
+          return
 
 #        oldState = event.data['old_state'];
 #        if oldState is None:
@@ -49,3 +54,8 @@ def setup(hass, config):
     hass.bus.listen(EVENT_STATE_CHANGED, event_listener)
 
     return True
+
+
+def getRegisteredHADeviceList(app_url, app_id, access_token):
+    response = requests.get(app_url + app_id + "/getHADevices?access_token=" + access_token)
+    return json.loads(response.text)['list']
