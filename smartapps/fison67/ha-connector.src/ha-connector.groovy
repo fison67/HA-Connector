@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.7)
+ *  HA Connector (v.0.0.8)
  *
  *  Authors
  *   - fison67@nate.com
@@ -749,8 +749,20 @@ def updateDevice(){
         log.error "${err}"
     }
 	
-	 def deviceJson = new groovy.json.JsonOutput().toJson([result: true])
-	 render contentType: "application/json", data: deviceJson  
+	def deviceJson = new groovy.json.JsonOutput().toJson([result: true])
+	render contentType: "application/json", data: deviceJson  
+}
+
+def getHADevices(){
+	def haDevices = []
+	def childDevices = getAllChildDevices()
+    childDevices.each {childDevice->
+		haDevices.push(childDevice.deviceNetworkId.substring(13))
+    }
+    
+	def deviceJson = new groovy.json.JsonOutput().toJson([list: haDevices])
+	render contentType: "application/json", data: deviceJson  
+    
 }
 
 def getSTDevices(){
@@ -909,6 +921,7 @@ mappings {
         path("/config")                         { action: [GET: "authError"] }
         path("/update")                         { action: [GET: "authError"]  }
         path("/getSTDevices")                   { action: [GET: "authError"]  }
+        path("/getHADevices")                   { action: [GET: "authError"]  }
         path("/get") {
             action: [
                 GET: "authError",
@@ -920,6 +933,7 @@ mappings {
         path("/config")                         { action: [GET: "renderConfig"]  }
         path("/update")                         { action: [GET: "updateDevice"]  }
         path("/getSTDevices")                   { action: [GET: "getSTDevices"]  }
+        path("/getHADevices")                   { action: [GET: "getHADevices"]  }
   		path("/get") {
             action: [
                 GET: "getSTDevice",
