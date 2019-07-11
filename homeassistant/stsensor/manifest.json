@@ -1,0 +1,8 @@
+{
+  "domain": "stsensor",
+  "name": "ST Sensor",
+  "documentation": "https://github.com/fison67/HA-Connector",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": []
+}
