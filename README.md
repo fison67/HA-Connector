@@ -1,7 +1,7 @@
 ## Warning
-This connector works ha version 0.95.4.
-This connector might delete your configuration. Backup first.
-This will not work ha with https.
+This connector works ha version 0.95.4.<br/>
+This connector might delete your configuration. Backup first.<br/>
+This will not work ha with https.<br/>
 <br/><br/>
 
 ## Install Device Type Handler (DTH)
