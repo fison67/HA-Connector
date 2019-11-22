@@ -1,5 +1,5 @@
 /**
- *  HA Motion Sensor (v.0.0.1)
+ *  HA Motion Sensor (v.0.0.2)
  *
  *  Authors
  *   - fison67@nate.com
@@ -112,8 +112,8 @@ def refresh(){
      	"method": "GET",
         "path": "/api/states/${state.entity_id}",
         "headers": [
-        	"HOST": state.app_url,
-            "x-ha-access": state.app_pwd,
+        	"HOST": parent._getServerURL(),
+            "Authorization": "Bearer " + parent._getPassword(),
             "Content-Type": "application/json"
         ]
     ]
