@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.8)
+ *  HA Connector (v.0.0.9)
  *
  *  Authors
  *   - fison67@nate.com
@@ -409,7 +409,7 @@ def mainPage() {
     dynamicPage(name: "mainPage", title: "Home Assistant Manage", nextPage: null, uninstall: true, install: true) {
         section("Configure HA API"){
            input "haAddress", "string", title: "HA address", required: true
-           input "haPassword", "string", title: "HA Password", required: true
+           input "haPassword", "string", title: "HA Token", required: true
            href "haDevicePage", title: "Get HA Devices", description:""
            href "haAddDevicePage", title: "Add HA Device", description:""
            href "haDeleteDevicePage", title: "Delete HA Device", description:""
@@ -438,6 +438,14 @@ def stAddDevicePage(){
             }
         }
     }
+}
+
+def _getServerURL(){
+     return settings.haAddress
+}
+
+def _getPassword(){
+     return settings.haPassword
 }
 
 def haDevicePage(){
@@ -559,7 +567,7 @@ def stateChangeHandler(evt) {
             "path": ("/api/states/" + ids),
             "headers": [
                 "HOST": settings.haAddress,
-                "x-ha-access": settings.haPassword,
+                "Authorization": "Bearer ${settings.haPassword}",
                 "Content-Type": "application/json"
             ],
             "body":[
@@ -703,7 +711,7 @@ def getDataList(){
         "path": "/api/states",
         "headers": [
         	"HOST": settings.haAddress,
-            "x-ha-access": settings.haPassword,
+            "Authorization": "Bearer ${settings.haPassword}",
             "Content-Type": "application/json"
         ]
     ]
