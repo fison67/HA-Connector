@@ -139,8 +139,8 @@ def commandToHA(cmd){
      	"method": "POST",
         "path": "/api/services/" + temp[0] + (cmd == "on" ? "/turn_on" : "/turn_off"),
         "headers": [
-        	"HOST": state.app_url,
-            "x-ha-access": state.app_pwd,
+        	"HOST": parent._getServerURL(),
+            "Authorization": "Bearer " + parent._getPassword(),
             "Content-Type": "application/json"
         ],
         "body":[
