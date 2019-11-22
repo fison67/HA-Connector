@@ -1,5 +1,5 @@
 /**
- *  HA Blind(v.0.0.1)
+ *  HA Blind(v.0.0.2)
  *
  * MIT License
  *
@@ -119,8 +119,8 @@ def refresh(){
      	"method": "GET",
         "path": "/api/states/${state.entity_id}",
         "headers": [
-        	"HOST": state.app_url,
-            "x-ha-access": state.app_pwd,
+        	"HOST": parent._getServerURL(),
+            "Authorization": "Bearer " + parent._getPassword(),
             "Content-Type": "application/json"
         ]
     ]
@@ -166,8 +166,8 @@ def processCommand(command, body){
      	"method": "POST",
         "path": "/api/services/${temp[0]}/${command}",
         "headers": [
-        	"HOST": state.app_url,
-            "x-ha-access": state.app_pwd,
+        	"HOST": parent._getServerURL(),
+            "Authorization": "Bearer " + parent._getPassword(),
             "Content-Type": "application/json"
         ],
         "body":body
