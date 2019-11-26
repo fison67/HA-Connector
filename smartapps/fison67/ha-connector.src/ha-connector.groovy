@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.9)
+ *  HA Connector (v.0.0.10)
  *
  *  Authors
  *   - fison67@nate.com
@@ -408,8 +408,8 @@ def mainPage() {
 //    log.debug "Executing mainPage"
     dynamicPage(name: "mainPage", title: "Home Assistant Manage", nextPage: null, uninstall: true, install: true) {
         section("Configure HA API"){
-           input "haAddress", "string", title: "HA address", required: true
-           input "haPassword", "string", title: "HA Token", required: true
+           input "haAddress", "text", title: "HA address", required: true
+           input "haPassword", "text", title: "HA Token", required: true
            href "haDevicePage", title: "Get HA Devices", description:""
            href "haAddDevicePage", title: "Add HA Device", description:""
            href "haDeleteDevicePage", title: "Delete HA Device", description:""
