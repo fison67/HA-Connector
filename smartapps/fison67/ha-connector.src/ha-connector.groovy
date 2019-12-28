@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.10)
+ *  HA Connector (v.0.0.11)
  *
  *  Authors
  *   - fison67@nate.com
@@ -425,7 +425,7 @@ def mainPage() {
 def haTypePage() {
     dynamicPage(name: "haTypePage", title: "Select a type", nextPage: "mainPage") {
        section("Configure HA API"){
-           input "haAddType", "enum", title: "type", required: true, options: ["Default Sensor", "Switch", "Color Light", "White Light", "Motion Sensor", "Power Meter", "Illuminance Sensor", "Door Sensor", "Presence Sensor", "Temperature Sensor", "Humidity Sensor", "Battery", "Vacuum", "Blind", "Air Conditioner"], defaultValue: "Default"
+           input "haAddType", "enum", title: "type", required: true, options: ["Default Sensor", "Switch", "Color Light", "White Light", "Motion Sensor", "Power Meter", "Illuminance Sensor", "Door Sensor", "Presence Sensor", "Temperature Sensor", "Humidity Sensor", "Battery", "Vacuum", "Blind", "Air Conditioner", "Button"], defaultValue: "Default"
        }
     }
 }
@@ -743,12 +743,13 @@ def deviceAttributeList(device) {
 }
 
 def updateDevice(){
-	def dni = "ha-connector-" + params.entity_id 
+	def dni = "ha-connector-" + params.entity_id
     try{
     	def device = getChildDevice(dni)
         if(device){
         	log.debug "HA -> ST >> [${dni} : ${params.value}]"
             device.setStatus(params.value)
+         //   device.setStatus(new String(params.value.decodeBase64()))
             if(params.unit){
             	device.setUnitOfMeasurement(params.unit)
             }
