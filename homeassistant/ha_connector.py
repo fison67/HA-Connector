@@ -23,25 +23,22 @@ def setup(hass, config):
     app_id = config[DOMAIN].get('app_id')
     access_token = config[DOMAIN].get('access_token')
     registerList = getRegisteredHADeviceList(app_url, app_id, access_token)
+    _memory = {}
 
     def event_listener(event):
-
-        state = event.data.get('new_state')
-        if state is None or state.state in (STATE_UNKNOWN, ''):
-            return None
-
-        jsonData = {};
-        newState = event.data['new_state'];
-        if newState is None:
-          return;
-
-        if newState.entity_id not in registerList:
-          return
-
-#        oldState = event.data['old_state'];
-#        if oldState is None:
-#          return;
-
+    	
+        newState = event.data['new_state']
+        id = newState.entity_id
+        if newState is None or newState.state in (STATE_UNKNOWN, '') or id not in registerList:
+            return None	
+        
+        lastUpdateTime = newState.last_changed.timestamp()
+        if id in _memory:
+            if _memory[id] == lastUpdateTime:
+        	    return None
+        
+        _memory[id] = lastUpdateTime
+        	
         url = app_url + app_id + "/update?access_token=" + access_token + "&entity_id=" + newState.entity_id + "&value=" + newState.state;
         try:
            if newState.attributes.unit_of_measurement:
@@ -49,7 +46,8 @@ def setup(hass, config):
         except:
            url = url
 
-        response = requests.get(url);
+        response = requests.get(url)
+        
 
     hass.bus.listen(EVENT_STATE_CHANGED, event_listener)
 
