@@ -693,15 +693,18 @@ def initialize() {
 }
 
 def dataCallback(physicalgraph.device.HubResponse hubResponse) {
-    def msg, json, status
+    def msg, status, json = []
     try {
         msg = parseLanMessage(hubResponse.description)
         status = msg.status
-        json = msg.json
+        msg.json.each {
+            def obj = [entity_id: "${it.entity_id}", attributes: [friendly_name: "${it.attributes.friendly_name}"]]
+            json.push(obj)
+        }
         state.dataList = json
     	state.latestHttpResponse = status
     } catch (e) {
-        logger('warn', "Exception caught while parsing data: "+e);
+        log.warn "Exception caught while parsing data: "+e
     }
 }
 
