@@ -35,22 +35,22 @@ def setup(hass, config):
         lastUpdateTime = newState.last_changed.timestamp()
         if id in _memory:
             if _memory[id] == lastUpdateTime:
-                    return None
+                return None
 
         _memory[id] = lastUpdateTime
         '''
         url = app_url + app_id + "/update?access_token=" + access_token + "&entity_id=" + newState.entity_id + "&value=" + newState.state;
         try:
-           if newState.attributes.unit_of_measurement:
-              url += "&unit=" + newState.attributes.unit_of_measurement
+            if newState.attributes.unit_of_measurement:
+                url += "&unit=" + newState.attributes.unit_of_measurement
         except:
-           url = url
+            url = url
 
         try:
-           attr = json.dumps(newState.as_dict().get('attributes'))
-           url += "&attr="+base64.b64encode(attr.encode()).decode()
+            attr = json.dumps(newState.as_dict().get('attributes'))
+            url += "&attr="+base64.b64encode(attr.encode()).decode()
         except:
-           attr = ""
+            attr = ""
 
         response = requests.get(url)
 
