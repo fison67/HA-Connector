@@ -405,7 +405,7 @@ preferences {
 
 
 def mainPage() {
-//    log.debug "Executing mainPage"
+    //log.debug "Executing mainPage"
     dynamicPage(name: "mainPage", title: "Home Assistant Manage", nextPage: null, uninstall: true, install: true) {
         section("Configure HA API"){
            input "haAddress", "text", title: "HA address", required: true
@@ -576,7 +576,7 @@ def stateChangeHandler(evt) {
             ]
         ]
         
-//        log.debug "ST -> HA >> [${device.displayName}(${device.deviceNetworkId}) : ${value}]"
+        //log.debug "ST -> HA >> [${device.displayName}(${device.deviceNetworkId}) : ${value}]"
         def myhubAction = new physicalgraph.device.HubAction(options, null, [callback: notifyCallback])
         sendHubCommand(myhubAction)
     }
@@ -586,7 +586,7 @@ def notifyCallback(physicalgraph.device.HubResponse hubResponse) {
     def msg, json, status
     try {
         msg = parseLanMessage(hubResponse.description)
-//        log.debug(msg)
+        //log.debug(msg)
     } catch (e) {
         log.warn "Exception caught while parsing data: "+e
     }
@@ -635,7 +635,7 @@ def getHADeviceByEntityId(entity_id){
 }
 
 def addHAChildDevice(){
-//    String[] dth1_list = ["active", "inactive", "open", "closed", "dry", "wet", "clear", "detected", "not present", "present", "home", "not_home", "on", "off"]
+    //String[] dth1_list = ["active", "inactive", "open", "closed", "dry", "wet", "clear", "detected", "not present", "present", "home", "not_home", "on", "off"]
     if(settings.selectedAddHADevice){
         if(settings.selectedAddHADevice != "None"){
             log.debug "ADD >> " + settings.selectedAddHADevice
@@ -710,7 +710,7 @@ def dataCallback(physicalgraph.device.HubResponse hubResponse) {
 
 def getDataList(){
     def options = [
-         "method": "GET",
+        "method": "GET",
         "path": "/api/states",
         "headers": [
             "HOST": settings.haAddress,
@@ -724,15 +724,15 @@ def getDataList(){
 }
 
 def deviceCommandList(device) {
-      device.supportedCommands.collectEntries { command->
+    device.supportedCommands.collectEntries { command->
         [
               (command.name): (command.arguments)
         ]
-      }
+    }
 }
 
 def deviceAttributeList(device) {
-      device.supportedAttributes.collectEntries { attribute->
+    device.supportedAttributes.collectEntries { attribute->
         try {
               [
                 (attribute.name): device.currentValue(attribute.name)
@@ -742,7 +742,7 @@ def deviceAttributeList(device) {
                 (attribute.name): null
               ]
         }
-      }
+    }
 }
 
 def updateDevice(){
@@ -760,7 +760,7 @@ def updateDevice(){
                 device.setStatusAttr(params.value, attr)
             } else {
                 device.setStatus(params.value)
-                // device.setStatus(new String(params.value.decodeBase64()))
+                //device.setStatus(new String(params.value.decodeBase64()))
             }
             if(params.unit){
                 device.setUnitOfMeasurement(params.unit)
@@ -836,12 +836,12 @@ def getSTDevice(){
                     def dni = device.deviceNetworkId
                     if(dni == params.dni){
                         totalMap["entity_id"] = "sensor.st_" + dni.toLowerCase()
-              //          resultMap["friendly_name"] = device.displayName
+                        //resultMap["friendly_name"] = device.displayName
                         def theAtts = device.supportedAttributes
                         theAtts.each {att ->
                             def item = {}
                             try{
-                          //      if(existValueInList(attrList, att.name)){ 
+                                  //if(existValueInList(attrList, att.name)){ 
                                   if(attrList.contains(att.name)){
                                     if(status == null){
                                         status = device.currentValue(att.name)
@@ -852,12 +852,10 @@ def getSTDevice(){
                                 def val = device."$_attr".value
                                 resultMap["${att.name}"] = val
                             }catch(e){
-                          //      log.error("${e}")
+                                //log.error("${e}")
                             }
                         }
-                      //      log.debug "Switch:" + device.currentValue("switch")
-                            
-                      
+                        //log.debug "Switch:" + device.currentValue("switch")
                     }
                 }
             }
@@ -867,7 +865,7 @@ def getSTDevice(){
     totalMap['state'] = status
     totalMap['attributes'] = resultMap
     def deviceJson = new groovy.json.JsonOutput().toJson(totalMap)
-//    log.debug "GET =======>>> ${params}, status: ${resultMap}"
+    //log.debug "GET =======>>> ${params}, status: ${resultMap}"
     render contentType: "application/json", data: deviceJson  
 }
 
@@ -881,7 +879,7 @@ def existValueInList(list, value){
 }
 
 def updateSTDevice(){
-//    log.debug "POST >>>> param:${params}"
+    //log.debug "POST >>>> param:${params}"
     def state = "${params.turn}"
     CAPABILITY_MAP.each { key, capability ->
         capability["attributes"].each { attribute ->
@@ -955,7 +953,7 @@ mappings {
         path("/update")                         { action: [GET: "updateDevice"]  }
         path("/getSTDevices")                   { action: [GET: "getSTDevices"]  }
         path("/getHADevices")                   { action: [GET: "getHADevices"]  }
-          path("/get") {
+        path("/get") {
             action: [
                 GET: "getSTDevice",
                 POST: "updateSTDevice"
