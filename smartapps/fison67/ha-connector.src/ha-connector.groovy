@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.12)
+ *  HA Connector (v.0.0.13)
  *
  *  Authors
  *   - fison67@nate.com
@@ -748,16 +748,23 @@ def deviceAttributeList(device) {
 def updateDevice(){
     def dni = "ha-connector-" + params.entity_id
     def attr = null
+    def oldstate = null
     try {
         attr = new groovy.json.JsonSlurper().parseText(new String(params.attr.decodeBase64()))
     }catch(err){
+    	log.debug "${dni} attr decoding error : "+params.attr
     }
+    oldstate = params?.old
     try{
         def device = getChildDevice(dni)
         if(device){
-            log.debug "HA -> ST >> [${dni}] state:${params.value}  attr:${attr}"
-            if(attr != null && device.state?.hasSetStatusAttr == true) {
-                device.setStatusAttr(params.value, attr)
+            log.debug "HA -> ST >> [${dni}] state:${params.value}  attr:${attr}  oldstate:${oldstate}"
+            if(device.state?.hasSetStatusMap == true) {
+            	def obj = [:]
+                obj["state"] = params.value
+                obj["attr"] = attr 
+                obj["oldstate"] = oldstate
+                device.setStatusMap(obj)
             } else {
                 device.setStatus(params.value)
                 //device.setStatus(new String(params.value.decodeBase64()))

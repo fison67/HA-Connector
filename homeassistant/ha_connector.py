@@ -11,6 +11,7 @@ ha_connector:
 import requests
 import logging
 import json
+import base64
 
 import homeassistant.loader as loader
 from homeassistant.const import (STATE_UNKNOWN, EVENT_STATE_CHANGED)
@@ -23,23 +24,15 @@ def setup(hass, config):
     app_id = config[DOMAIN].get('app_id')
     access_token = config[DOMAIN].get('access_token')
     registerList = getRegisteredHADeviceList(app_url, app_id, access_token)
-    #_memory = {}
 
     def event_listener(event):
 
         newState = event.data['new_state']
-        id = newState.entity_id
-        if newState is None or newState.state in (STATE_UNKNOWN, '') or id not in registerList:
+        if newState is None or newState.state in (STATE_UNKNOWN, '') or newState.entity_id not in registerList:
             return None
-        '''
-        lastUpdateTime = newState.last_changed.timestamp()
-        if id in _memory:
-            if _memory[id] == lastUpdateTime:
-                return None
+        id = newState.entity_id
+        url = app_url + app_id + "/update?access_token=" + access_token + "&entity_id=" + newState.entity_id + "&value=" + newState.state
 
-        _memory[id] = lastUpdateTime
-        '''
-        url = app_url + app_id + "/update?access_token=" + access_token + "&entity_id=" + newState.entity_id + "&value=" + newState.state;
         try:
             if newState.attributes.unit_of_measurement:
                 url += "&unit=" + newState.attributes.unit_of_measurement
@@ -48,10 +41,16 @@ def setup(hass, config):
 
         try:
             attr = json.dumps(newState.as_dict().get('attributes'))
-            url += "&attr="+base64.b64encode(attr.encode()).decode()
+            attr = base64.b64encode(attr.encode()).decode()
         except:
             attr = ""
 
+        try:
+            oldstate = event.data['old_state'].state
+        except:
+            oldstate = ""
+
+        url += "&attr="+attr+"&old="+oldstate
         response = requests.get(url)
 
 
