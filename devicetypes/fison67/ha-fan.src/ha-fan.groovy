@@ -76,7 +76,15 @@ def setStatusMap(map){
 	log.debug map
  	setStatus(map.state)
     if(map.state["speed"] != null){
-    	sendEvent(name: "level", value:map.state["speed"])
+    	def level = 10
+        if(map.attr["speed"] == "low"){
+        	level = 32
+        }else if(map.attr["speed"] == "medium"){
+        	level = 66
+        }else{
+        	level = 100
+        }
+    	sendEvent(name: "level", value:level)
     }
 }
 
@@ -116,9 +124,9 @@ def refresh(){
 
 def setLevel(level){
 	def speed = "low"
-    if(0 < level && level < 33){
+    if(0 <= level && level < 33){
     	speed = "low"
-    }else if(33 < level && level < 66){
+    }else if(33 <= level && level < 66){
     	speed = "medium"
     }else{
     	speed = "high"
