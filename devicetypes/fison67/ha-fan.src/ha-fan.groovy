@@ -67,11 +67,20 @@ def setHASetting(url, password, deviceId){
 	state.app_url = url
     state.app_pwd = password
     state.entity_id = deviceId
+    state.hasSetStatusMap = true
     
     sendEvent(name: "ha_url", value: state.app_url, displayed: false)
 }
 
-def setStatus(params){
+def setStatusMap(map){
+	log.debug map
+ 	setStatus(map.state)
+    if(map.state["speed"] != null){
+    	sendEvent(name: "level", value:map.state["speed"])
+    }
+}
+
+def setStatus(String value){
  	if(state.entity_id == null){
     	return
     }
