@@ -32,7 +32,9 @@ metadata {
 
 
 	simulator { }
-	preferences { }
+	preferences {
+        input name: "baseValue", title:"HA On Value" , type: "string", required: true, defaultValue: "on"
+    }
 
 	tiles {
 		multiAttributeTile(name:"switch", type: "generic", width: 6, height: 4, canChangeIcon: true){
@@ -95,11 +97,11 @@ def setStatus(String value){
 	log.debug "Status[${state.entity_id}] >> ${value}"
     
     def now = new Date().format("yyyy-MM-dd HH:mm:ss", location.timeZone)
-    def baseVal = baseOffValue
+    def baseVal = baseValue
     if(baseVal == null){
-    	baseVal = "off"
+    	baseVal = "on"
     }
-    def _value = (baseVal == value ? "off" : "on")
+    def _value = (baseVal == value ? "on" : "off")
     
     if(device.currentValue("switch") != _value){
         sendEvent(name: (_value == "on" ? "lastOn" : "lastOff"), value: now, displayed: false )
