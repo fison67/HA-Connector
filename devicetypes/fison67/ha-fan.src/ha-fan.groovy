@@ -115,7 +115,15 @@ def refresh(){
 }
 
 def setLevel(level){
-	processCommand("set_speed", [ "entity_id": state.entity_id, "speed":level ])
+	def speed = "low"
+    if(0 < level && level < 33){
+    	speed = "low"
+    }else if(33 < level && level < 66){
+    	speed = "medium"
+    }else{
+    	speed = "high"
+    }
+	processCommand("set_speed", [ "entity_id": state.entity_id, "speed":speed ])
 }    
 
 def on(){
