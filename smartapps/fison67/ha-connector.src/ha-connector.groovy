@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.14)
+ *  HA Connector (v.0.0.15)
  *
  *  Authors
  *   - fison67@nate.com
@@ -481,7 +481,7 @@ def haAddDevicePage(){
             friendly_name = ""
         }
            if(!addedDNIList.contains("ha-connector-" + entity_id)){
-            if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("cover.") || entity_id.contains("sensor.") || entity_id.contains("vacuum.") || entity_id.contains("device_tracker.") || entity_id.contains("climate.")){
+            if(entity_id.contains("light.") || entity_id.contains("switch.") || entity_id.contains("fan.") || entity_id.contains("cover.") || entity_id.contains("sensor.") || entity_id.contains("vacuum.") || entity_id.contains("device_tracker.") || entity_id.contains("climate.") || entity_id.contains("media_player.")){
                 if(!entity_id.startsWith("sensor.st_") && !entity_id.startsWith("switch.st_")){
                     list.push("${friendly_name} [ ${entity_id} ]")
                 }
@@ -689,7 +689,23 @@ def initialize() {
 
     deleteChildDevice()
     addHAChildDevice()
+    refreshRegisteredHADeviceList()
+}
 
+def refreshRegisteredHADeviceList(){
+    def options = [
+        "method": "POST",
+        "path": "/api/services/ha_connector/refresh",
+        "headers": [
+            "HOST": settings.haAddress,
+            "Authorization": "Bearer ${settings.haPassword}",
+            "Content-Type": "application/json"
+        ],
+        "body": []
+    ]
+    
+    def myhubAction = new physicalgraph.device.HubAction(options, null, [callback: null])
+    sendHubCommand(myhubAction)
 }
 
 def dataCallback(physicalgraph.device.HubResponse hubResponse) {
@@ -752,15 +768,18 @@ def updateDevice(){
     try {
         attr = new groovy.json.JsonSlurper().parseText(new String(params.attr.decodeBase64()))
     }catch(err){
-    	log.debug "${dni} attr decoding error : "+params.attr
+        log.debug "${dni} attr decoding error : "+params.attr
     }
     oldstate = params?.old
     try{
         def device = getChildDevice(dni)
         if(device){
-            log.debug "HA -> ST >> [${dni}] state:${params.value}  attr:${attr}  oldstate:${oldstate}"
+            log.debug "HA -> ST >> [${dni}] state:${params.value}  attr:${attr}  oldstate:${oldstate}" + ((params?.unit) ? "  unit:${params.unit}" : "")
+            if(params?.unit){
+                device.setUnitOfMeasurement(params.unit)
+            }
             if(device.state?.hasSetStatusMap == true) {
-            	def obj = [:]
+                def obj = [:]
                 obj["state"] = params.value
                 obj["attr"] = attr 
                 obj["oldstate"] = oldstate
@@ -768,9 +787,6 @@ def updateDevice(){
             } else {
                 device.setStatus(params.value)
                 //device.setStatus(new String(params.value.decodeBase64()))
-            }
-            if(params.unit){
-                device.setUnitOfMeasurement(params.unit)
             }
          }
     }catch(err){
