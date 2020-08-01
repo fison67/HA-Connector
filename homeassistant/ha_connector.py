@@ -34,8 +34,7 @@ def setup(hass, config):
         url = app_url + app_id + "/update?access_token=" + access_token + "&entity_id=" + newState.entity_id + "&value=" + newState.state
 
         try:
-            if newState.attributes.unit_of_measurement:
-                url += "&unit=" + newState.attributes.unit_of_measurement
+            url += "&unit=" + newState.as_dict()['attributes']['unit_of_measurement']
         except:
             url = url
 
@@ -54,7 +53,13 @@ def setup(hass, config):
         response = requests.get(url)
 
 
+    def do_refresh(call):
+        nonlocal registerList
+        registerList = getRegisteredHADeviceList(app_url, app_id, access_token)
+            
+
     hass.bus.listen(EVENT_STATE_CHANGED, event_listener)
+    hass.services.register(DOMAIN, "refresh", do_refresh)
 
     return True
 
