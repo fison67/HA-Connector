@@ -1,5 +1,5 @@
 /**
- *  HA Blind(v.0.0.2)
+ *  HA Blind(v.0.0.3)
  *
  * MIT License
  *
@@ -30,7 +30,7 @@
 import groovy.json.JsonSlurper
 
 metadata {
-	definition (name: "HA Blind", namespace: "fison67", author: "fison67") {
+	definition (name: "HA Blind", namespace: "fison67", author: "fison67", vid: "SmartThings-smartthings-Springs_Window_Fashions_Shade", ocfDeviceType:"oic.d.blind") {
         capability "Actuator"		
         capability "Switch Level"
         capability "windowShade"
@@ -149,6 +149,10 @@ def stop(){
         "entity_id": state.entity_id
     ]
 	processCommand("stop_cover", body)
+}
+
+def presetPosition(position){
+	setLevel(position)
 }
 
 def setLevel(level){
