@@ -1,0 +1,6 @@
+{
+  "name": "[KR] HA-Connector",
+  "country": "KR",
+  "domains": ["ha_connector"],
+  "render_readme": true
+}
