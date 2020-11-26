@@ -2,5 +2,6 @@
   "name": "[KR] HA-Connector",
   "country": "KR",
   "domains": ["ha_connector"],
+  "homeassistant": "0.110",
   "render_readme": true
 }
