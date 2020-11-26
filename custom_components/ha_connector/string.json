@@ -1,0 +1,19 @@
+{
+  "title": "HA-Connector",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up HA-Connector",
+        "description": "Do you want to set up HA-Connector.",
+        "data": {
+          "app_url": "[%key:common::config_flow::data::app_url%]",
+          "app_id": "[%key:common::config_flow::data::app_id%]",
+          "access_token": "[%key:common::config_flow::data::access_token%]",
+        }
+      }
+    },
+    "abort": {
+      "one_instance_allowed": "Only a single instance is necessary."
+    }
+  }
+}
