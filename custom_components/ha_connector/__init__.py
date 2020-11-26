@@ -56,9 +56,9 @@ def setup(hass, config):
     if DOMAIN not in config:
         return True
 
-    app_url = config[DOMAIN][CONF_APP_URL] #.get('app_url')
-    app_id  = config[DOMAIN][CONF_APP_ID] #.get('app_id')
-    access_token = config[DOMAIN][CONF_ACCESS_TOKEN] #.get('access_token')
+    app_url = config[DOMAIN][CONF_APP_URL]
+    app_id  = config[DOMAIN][CONF_APP_ID]
+    access_token = config[DOMAIN][CONF_ACCESS_TOKEN]
 
     registerList = getRegisteredHADeviceList(app_url, app_id, access_token)
 
