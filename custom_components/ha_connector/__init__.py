@@ -23,6 +23,8 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.helpers import discovery
 
+_LOGGER = logging.getLogger(__name__)
+
 DOMAIN = "ha_connector"
 
 CONF_APP_URL = 'app_url'
