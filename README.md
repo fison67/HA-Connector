@@ -112,7 +112,7 @@ switch: !include switchs.yaml
 
 ### Setup HA Intergration( ha version >= 0.110 )
 ```
-0. Target only files in the following path.[ custom_components/ha_connector ]
+0. Target only files in the following path.[ homeassistant/custom_components/ha_connector ]
 1. Make a folder custom_components in ha config folder.
 2. Copy a folder ha_connector to custom_components.
 3. Configration > Intergrations > ADD INTERGRATION > Search "HA-Connector" and choice item.
