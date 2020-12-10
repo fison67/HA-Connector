@@ -19,7 +19,9 @@ import homeassistant.loader as loader
 from homeassistant.const import (STATE_UNKNOWN, EVENT_STATE_CHANGED)
 import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries
-#from homeassistant.remote import JSONEncoder
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
+from homeassistant.helpers import discovery
 
 DOMAIN = "ha_connector"
 
@@ -51,23 +53,30 @@ def config_combined() -> dict:
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: config_combined()}, extra=vol.ALLOW_EXTRA)
 
-def setup(hass, config):
+async def async_setup(hass, config):
 
     if DOMAIN not in config:
         return True
 
-    app_url = config[DOMAIN][CONF_APP_URL]
-    app_id  = config[DOMAIN][CONF_APP_ID]
+    app_url      = config[DOMAIN][CONF_APP_URL]
+    app_id       = config[DOMAIN][CONF_APP_ID]
     access_token = config[DOMAIN][CONF_ACCESS_TOKEN]
 
-    registerList = getRegisteredHADeviceList(app_url, app_id, access_token)
+    session = async_get_clientsession(hass)
 
-    def event_listener(event):
+    registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
+
+    hass.async_create_task(discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config))
+
+
+    async def event_listener(event):
 
         newState = event.data['new_state']
+
         if newState is None or newState.state in (STATE_UNKNOWN, '') or newState.entity_id not in registerList:
             return None
-        id = newState.entity_id
+
+        id  = newState.entity_id
         url = app_url + app_id + "/update?access_token=" + access_token + "&entity_id=" + newState.entity_id + "&value=" + newState.state
 
         try:
@@ -87,23 +96,25 @@ def setup(hass, config):
             oldstate = ""
 
         url += "&attr="+attr+"&old="+oldstate
-        response = requests.get(url)
+
+        response = await session.get(url)
 
 
-    def do_refresh(call):
+    async def do_refresh(call):
         nonlocal registerList
-        registerList = getRegisteredHADeviceList(app_url, app_id, access_token)
+        registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
 
 
-    hass.bus.listen(EVENT_STATE_CHANGED, event_listener)
-    hass.services.register(DOMAIN, "refresh", do_refresh)
+    hass.bus.async_listen(EVENT_STATE_CHANGED, event_listener)
+    hass.services.async_register(DOMAIN, "refresh", do_refresh)
 
     return True
 
 
-def getRegisteredHADeviceList(app_url, app_id, access_token):
-    response = requests.get(app_url + app_id + "/getHADevices?access_token=" + access_token)
-    return json.loads(response.text)['list']
+async def getRegisteredHADeviceList(session, app_url, app_id, access_token):
+    response = await session.get(app_url + app_id + "/getHADevices?access_token=" + access_token)
+
+    return json.loads( await response.text() )['list']
 
 
 async def async_setup_entry(hass, config_entry):
@@ -115,4 +126,55 @@ async def async_setup_entry(hass, config_entry):
         hass.async_create_task(hass.config_entries.async_remove(config_entry.entry_id))
         return False
 
+    app_url = config_entry.data[CONF_APP_URL]
+    app_id  = config_entry.data[CONF_APP_ID]
+    access_token = config_entry.data[CONF_ACCESS_TOKEN]
+
+    session = async_get_clientsession(hass)
+
+    registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
+
+    hass.async_add_job(hass.config_entries.async_forward_entry_setup(config_entry, "sensor"))
+
+
+    async def event_listener(event):
+
+        newState = event.data['new_state']
+
+        if newState is None or newState.state in (STATE_UNKNOWN, '') or newState.entity_id not in registerList:
+            return None
+
+        id  = newState.entity_id
+        url = app_url + app_id + "/update?access_token=" + access_token + "&entity_id=" + newState.entity_id + "&value=" + newState.state
+
+        try:
+            url += "&unit=" + newState.as_dict()['attributes']['unit_of_measurement']
+        except:
+            url = url
+
+        try:
+            attr = json.dumps(newState.as_dict().get('attributes'))
+            attr = base64.b64encode(attr.encode()).decode()
+        except:
+            attr = ""
+
+        try:
+            oldstate = event.data['old_state'].state
+        except:
+            oldstate = ""
+
+        url += "&attr="+attr+"&old="+oldstate
+
+        response = await session.get(url)
+
+
+    async def do_refresh(call):
+        nonlocal registerList
+        registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
+
+
+    hass.bus.async_listen(EVENT_STATE_CHANGED, event_listener)
+    hass.services.async_register(DOMAIN, "refresh", do_refresh)
+
     return True
+

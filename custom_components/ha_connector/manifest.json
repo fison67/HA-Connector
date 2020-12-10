@@ -4,5 +4,6 @@
   "documentation": "https://github.com/fison67/HA-Connector",
   "dependencies": [],
   "codeowners": ["@fison67"],
-  "requirements": []
+  "requirements": [],
+  "config_flow": true
 }
