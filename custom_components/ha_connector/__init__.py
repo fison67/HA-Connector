@@ -68,9 +68,6 @@ async def async_setup(hass, config):
 
     registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
 
-    hass.async_create_task(discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config))
-
-
     async def event_listener(event):
 
         newState = event.data['new_state']
@@ -135,9 +132,6 @@ async def async_setup_entry(hass, config_entry):
     session = async_get_clientsession(hass)
 
     registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
-
-    hass.async_add_job(hass.config_entries.async_forward_entry_setup(config_entry, "sensor"))
-
 
     async def event_listener(event):
 
