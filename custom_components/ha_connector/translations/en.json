@@ -5,7 +5,7 @@
         },
         "step": {
             "user": {
-                "description": "HA-Connector \uCD94\uAC00\uD558\uAE30 \uC704\uD55C \uC124\uC815\uAC12\uC744 \uC785\uB825\uD558\uC138\uC694.",
+                "description": "Enter the setting values(app_url, app_id, access_token) to install the HA-Connector.",
                 "title": "HA-Connector Settings",
                 "data": {
                     "app_url": "App Url",
