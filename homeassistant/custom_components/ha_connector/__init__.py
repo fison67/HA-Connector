@@ -23,6 +23,8 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.helpers import discovery
 
+_LOGGER = logging.getLogger(__name__)
+
 DOMAIN = "ha_connector"
 
 CONF_APP_URL = 'app_url'
@@ -65,9 +67,6 @@ async def async_setup(hass, config):
     session = async_get_clientsession(hass)
 
     registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
-
-    hass.async_create_task(discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config))
-
 
     async def event_listener(event):
 
@@ -133,9 +132,6 @@ async def async_setup_entry(hass, config_entry):
     session = async_get_clientsession(hass)
 
     registerList = await getRegisteredHADeviceList(session, app_url, app_id, access_token)
-
-    hass.async_add_job(hass.config_entries.async_forward_entry_setup(config_entry, "sensor"))
-
 
     async def event_listener(event):
 
