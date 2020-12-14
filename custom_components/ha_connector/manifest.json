@@ -1,9 +1,0 @@
-{
-  "domain": "ha_connector",
-  "name": "HA-Connector",
-  "documentation": "https://github.com/fison67/HA-Connector",
-  "dependencies": [],
-  "codeowners": ["@fison67"],
-  "requirements": [],
-  "config_flow": true
-}
