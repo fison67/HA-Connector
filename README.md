@@ -110,13 +110,13 @@ switch: !include switchs.yaml
 6. Restart a HA
 ```
 
-### Setup HA Intergration( ha version >= 0.110 )
+### Setup HA Intergration( ha version >= 0.110 or 2020.12.0 )
 ```
 0. Target only files in the following path.[ homeassistant/custom_components/ha_connector ]
 1. Make a folder custom_components in ha config folder.
 2. Copy a folder ha_connector to custom_components.
 3. Configration > Intergrations > ADD INTERGRATION > Search "HA-Connector" and choice item.
-4. Input configration app_url, app_id, access_token
+4. Input configration app_url, app_id, access_token.
 ```
 
 ### Add a device
