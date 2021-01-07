@@ -1,0 +1,21 @@
+
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "\uD558\uB098\uC758 HA-Connector\uB9CC \uAD6C\uC131\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+        },
+        "step": {
+            "user": {
+                "description": "HA-Connector \uCD94\uAC00\uD558\uAE30 \uC704\uD55C \uC124\uC815\uAC12\uC744 \uC785\uB825\uD558\uC138\uC694.",
+                "title": "HA-Connector \uc124\uc815\ud558\uae30",
+                "data": {
+                    "app_url": "App Url",
+                    "app_id": "App ID",
+                    "access_token": "Access Token"
+                }
+
+            }
+        }
+    },
+    "title": "HA-Connector"
+}
