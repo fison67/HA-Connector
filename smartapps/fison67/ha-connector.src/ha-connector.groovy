@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.15)
+ *  HA Connector (v.0.0.16)
  *
  *  Authors
  *   - fison67@nate.com
@@ -406,6 +406,7 @@ preferences {
 
 def mainPage() {
     //log.debug "Executing mainPage"
+    state.latestHttpResponse = null
     dynamicPage(name: "mainPage", title: "Home Assistant Manage", nextPage: null, uninstall: true, install: true) {
         section("Configure HA API"){
            input "haAddress", "text", title: "HA address", required: true
@@ -450,13 +451,17 @@ def _getPassword(){
 
 def haDevicePage(){
     log.debug "Executing haDevicePage"
-    getDataList()
+    if (state.latestHttpResponse == null) {
+        getDataList()
+    }
     
-    dynamicPage(name: "haDevicePage", title:"Get HA Devices", refreshInterval:5) {
+    dynamicPage(name: "haDevicePage", title:"Get HA Devices", refreshInterval:3) {
         section("Please wait for the API to answer, this might take a couple of seconds.") {
             if(state.latestHttpResponse) {
                 if(state.latestHttpResponse == 200) {
                     paragraph "Connected \nOK: 200"
+                } else if (state.latestHttpResponse == -1) {
+                    paragraph "Smartthings Hub not found.\nYou need a Smartthings Hub to use HA connector"
                 } else {
                     paragraph "Connection error \nHTTP response code: " + state.latestHttpResponse
                 }
@@ -521,7 +526,7 @@ def installed() {
     if (!state.accessToken) {
         createAccessToken()
     }
-    
+
     app.updateSetting("selectedAddHADevice", "None")
     app.updateSetting("selectedDeleteHADevice", "None")
 }
@@ -578,7 +583,7 @@ def stateChangeHandler(evt) {
         
         //log.debug "ST -> HA >> [${device.displayName}(${device.deviceNetworkId}) : ${value}]"
         def myhubAction = new physicalgraph.device.HubAction(options, null, [callback: notifyCallback])
-        sendHubCommand(myhubAction)
+        sendHubCommandWrapper(myhubAction)
     }
 }
 
@@ -609,7 +614,7 @@ def updated() {
             }
         }
     }
-    
+
     app.updateSetting("haAddType", "Default Sensor")
     app.updateSetting("selectedAddHADevice", "None")
     app.updateSetting("selectedDeleteHADevice", "None")
@@ -705,7 +710,7 @@ def refreshRegisteredHADeviceList(){
     ]
     
     def myhubAction = new physicalgraph.device.HubAction(options, null, [callback: null])
-    sendHubCommand(myhubAction)
+    sendHubCommandWrapper(myhubAction)
 }
 
 def dataCallback(physicalgraph.device.HubResponse hubResponse) {
@@ -724,6 +729,15 @@ def dataCallback(physicalgraph.device.HubResponse hubResponse) {
     }
 }
 
+def sendHubCommandWrapper(myhubAction) {
+    if (location.hubs.size() == 0) {
+        state.latestHttpResponse = -1
+        return
+    } else {
+        return sendHubCommand(myhubAction)
+    }
+}
+
 def getDataList(){
     def options = [
         "method": "GET",
@@ -736,7 +750,7 @@ def getDataList(){
     ]
     
     def myhubAction = new physicalgraph.device.HubAction(options, null, [callback: dataCallback])
-    sendHubCommand(myhubAction)
+    sendHubCommandWrapper(myhubAction)
 }
 
 def deviceCommandList(device) {
@@ -785,8 +799,9 @@ def updateDevice(){
                 obj["oldstate"] = oldstate
                 device.setStatusMap(obj)
             } else {
-                device.setStatus(params.value)
-                //device.setStatus(new String(params.value.decodeBase64()))
+                if (params.value != oldstate) {
+                    device.setStatus(params.value)
+                }
             }
          }
     }catch(err){
