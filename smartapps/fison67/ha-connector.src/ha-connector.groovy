@@ -1,5 +1,5 @@
 /**
- *  HA Connector (v.0.0.15)
+ *  HA Connector (v.0.0.16)
  *
  *  Authors
  *   - fison67@nate.com
@@ -407,6 +407,12 @@ preferences {
 def mainPage() {
     //log.debug "Executing mainPage"
     dynamicPage(name: "mainPage", title: "Home Assistant Manage", nextPage: null, uninstall: true, install: true) {
+        if(location.hubs.size() < 1) {
+            section() {
+                paragraph "[ERROR]\nSmartThings Hub not found.\nYou need a SmartThings Hub to use HA connector."
+            }
+            return
+        }
         section("Configure HA API"){
            input "haAddress", "text", title: "HA address", required: true
            input "haPassword", "text", title: "HA Token", required: true
@@ -785,8 +791,9 @@ def updateDevice(){
                 obj["oldstate"] = oldstate
                 device.setStatusMap(obj)
             } else {
-                device.setStatus(params.value)
-                //device.setStatus(new String(params.value.decodeBase64()))
+                if (params.value != oldstate) {
+                    device.setStatus(params.value)
+                }
             }
          }
     }catch(err){
