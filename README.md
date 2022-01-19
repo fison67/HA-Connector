@@ -1,3 +1,8 @@
+<h1>HA-Connector is deprecated!!!</h1><br/>
+<h2>Use this. https://github.com/fison67/HA-Edge-Connector</h2>
+<br/><br/><br/><br/><br/>
+
+
 ## Warning
 This connector works ha version 0.95.4.<br/>
 This connector might delete your configuration. Backup first.<br/>
